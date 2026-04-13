@@ -155,8 +155,11 @@ function playFrom(list, idx) {
 }
 
 function updatePlayerUI(track) {
-  document.getElementById('trackTitle').textContent  = track.title
-  document.getElementById('trackArtist').textContent = track.artist
+  let line1 = track.title
+  if (track.artist)  line1 += ` / ${track.artist}`
+  if (track.release) line1 += ` - ${track.release}`
+  document.getElementById('trackTitle').textContent = line1
+  document.getElementById('trackFrame').textContent = track.frameName
 
   const img = document.getElementById('thumbImg')
   const ph  = document.getElementById('thumbPlaceholder')
@@ -235,10 +238,12 @@ async function loadData() {
         const startSec = extractStartSec(row['枠URL'])
         const endSec   = parseTimestamp(row['曲終了時間'])
         return {
-          title:   m['楽曲名'] || row['song_id'],
-          artist:  m['原曲アーティスト'] || '',
-          date:    row['配信日'],
-          videoId: extractVideoId(row['枠URL']),
+          title:     m['楽曲名'] || row['song_id'],
+          artist:    m['原曲アーティスト'] || '',
+          release:   m['リリース日'] || '',
+          frameName: row['枠名'] || '',
+          date:      row['配信日'],
+          videoId:   extractVideoId(row['枠URL']),
           startSec,
           endSec,
         }
