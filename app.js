@@ -1,7 +1,6 @@
 // ── データソース ──────────────────────────────────────────────────────────────
-const RAW_BASE      = 'https://raw.githubusercontent.com/Kinshutei/Mikage_HishatainoHeya/main'
-const STREAMING_URL = `${RAW_BASE}/streaminginfo_Mikage.csv`
-const MASTER_URL    = `${RAW_BASE}/rkmusic_song_master.csv`
+const STREAMING_URL = 'streaminginfo_Mikage.csv'
+const MASTER_URL    = 'rkmusic_song_master.csv'
 
 // ── 状態 ─────────────────────────────────────────────────────────────────────
 let ytPlayer       = null
