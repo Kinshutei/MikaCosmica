@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MikaCosmica</title>
+  <meta name="theme-color" content="#1a1a2e">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+  <!-- YouTube IFrame Player（画面外） -->
+  <div id="ytPlayerWrap">
+    <div id="ytPlayer"></div>
+  </div>
+
+  <!-- 検索バー -->
+  <div id="searchBar">
+    <input type="text" id="searchInput" placeholder="Search songs...">
+    <button id="refreshBtn" title="データ更新">↺</button>
+  </div>
+
+  <!-- プレーヤー -->
+  <div id="player">
+    <div id="thumbnail">
+      <img id="thumbImg" src="" alt="">
+      <div id="thumbPlaceholder">♪</div>
+    </div>
+    <div id="trackInfo">
+      <div id="trackTitle">深影 MikaCosmica</div>
+      <div id="trackArtist">曲を選択してください</div>
+    </div>
+    <div id="seekArea">
+      <span id="timeElapsed">0:00</span>
+      <div id="seekBar">
+        <div id="seekProgress"></div>
+        <div id="seekHandle"></div>
+      </div>
+      <span id="timeTotal">0:00</span>
+    </div>
+    <div id="controls">
+      <button id="prevBtn" class="ctrl-btn" title="前の曲">⏮</button>
+      <button id="playBtn" class="ctrl-btn play" title="再生/停止">▶</button>
+      <button id="nextBtn" class="ctrl-btn" title="次の曲">⏭</button>
+    </div>
+    <div id="volumeArea">
+      <span id="volumeIcon">🔊</span>
+      <input type="range" id="volumeSlider" min="0" max="100" value="100">
+      <span id="volumeLabel">100%</span>
+    </div>
+  </div>
+
+  <!-- トラックリスト -->
+  <div id="listArea">
+    <div id="listLive" class="track-list"></div>
+  </div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="app.js"></script>
+</body>
+</html>
