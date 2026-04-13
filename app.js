@@ -358,8 +358,8 @@ function renderTrackList(tracks) {
         <img class="track-thumb" src="${thumbUrl(t.videoId)}" alt=""
              onerror="this.style.display='none'">
         <div class="track-meta">
-          <div class="track-name">${esc(t.title)}</div>
-          <div class="track-sub">${esc(t.artist)}${t.date ? ' · ' + t.date : ''}</div>
+          <div class="track-name">${esc(t.title)}${t.artist ? ' / ' + esc(t.artist) : ''}${t.release ? ' - ' + esc(t.release) : ''}</div>
+          <div class="track-sub">${esc(t.frameName)}</div>
         </div>
       </div>`
   }).join('')
