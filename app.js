@@ -167,7 +167,7 @@ function updatePlayerUI(track) {
   img.onerror = () => { img.classList.remove('visible'); ph.style.display = '' }
 
   const vol = loadVolume(track.videoId)
-  document.getElementById('volumeLabel').textContent = `${vol}%`
+  if (ytPlayer && ytReady) ytPlayer.setVolume(vol)
 
   document.getElementById('seekProgress').style.width = '0%'
   document.getElementById('seekHandle').style.left    = '0%'
@@ -403,14 +403,23 @@ document.getElementById('nextBtn').addEventListener('click', playNext)
 document.getElementById('prevBtn').addEventListener('click', playPrev)
 document.getElementById('refreshBtn').addEventListener('click', loadData)
 
+let toastTimer = null
+function showVolumeToast(vol) {
+  const el = document.getElementById('volumeToast')
+  el.textContent = `${vol}%`
+  el.classList.add('show')
+  if (toastTimer) clearTimeout(toastTimer)
+  toastTimer = setTimeout(() => el.classList.remove('show'), 1500)
+}
+
 function adjustVolume(delta) {
   if (queueIdx < 0 || !queue[queueIdx]) return
   const videoId = queue[queueIdx].videoId
   const current = loadVolume(videoId)
   const next    = Math.min(100, Math.max(0, current + delta))
   saveVolume(videoId, next)
-  document.getElementById('volumeLabel').textContent = `${next}%`
   if (ytPlayer && ytReady) ytPlayer.setVolume(next)
+  showVolumeToast(next)
 }
 
 document.getElementById('volDownBtn').addEventListener('click', () => adjustVolume(-5))
@@ -424,5 +433,4 @@ if ('serviceWorker' in navigator) {
 }
 
 // ── 初期化 ────────────────────────────────────────────────────────────────────
-document.getElementById('volumeLabel').textContent = `${DEFAULT_VOLUME}%`
 loadData()

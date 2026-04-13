@@ -182,18 +182,6 @@ body {
 
 .ctrl-btn.play:hover { background: #c73652; }
 
-/* 音量 */
-#volumeArea {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: #aaa;
-}
-
-#volumeLabel { min-width: 44px; text-align: center; }
-
 .vol-btn {
   background: none;
   border: 1px solid #0f3460;
@@ -208,6 +196,25 @@ body {
 }
 
 .vol-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+/* トースト */
+#volumeToast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(233,69,96,0.9);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 20px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+#volumeToast.show { opacity: 1; }
 
 /* ── トラックリスト ── */
 #listArea {
