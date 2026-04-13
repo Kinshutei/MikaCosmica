@@ -1,6 +1,7 @@
 // ── データソース ──────────────────────────────────────────────────────────────
-const STREAMING_URL = 'streaminginfo_Mikage.csv'
-const MASTER_URL    = 'rkmusic_song_master.csv'
+const STREAMING_URL   = 'streaminginfo_Mikage.csv'
+const MASTER_URL      = 'rkmusic_song_master.csv'
+const DEFAULT_VOLUME  = 50
 
 // ── 状態 ─────────────────────────────────────────────────────────────────────
 let ytPlayer       = null
@@ -371,7 +372,7 @@ function showMsg(msg) {
 
 // ── 音量記憶 ──────────────────────────────────────────────────────────────────
 function loadVolume(videoId) {
-  return parseInt(localStorage.getItem(`vol_${videoId}`) ?? '50')
+  return parseInt(localStorage.getItem(`vol_${videoId}`) ?? DEFAULT_VOLUME)
 }
 
 function saveVolume(videoId, vol) {
@@ -423,4 +424,5 @@ if ('serviceWorker' in navigator) {
 }
 
 // ── 初期化 ────────────────────────────────────────────────────────────────────
+document.getElementById('volumeLabel').textContent = `${DEFAULT_VOLUME}%`
 loadData()
