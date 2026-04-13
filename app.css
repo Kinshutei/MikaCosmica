@@ -192,27 +192,22 @@ body {
   color: #aaa;
 }
 
-#volumeIcon { font-size: 14px; }
-#volumeLabel { min-width: 36px; text-align: right; }
+#volumeLabel { min-width: 44px; text-align: center; }
 
-#volumeSlider {
-  flex: 1;
-  -webkit-appearance: none;
-  height: 4px;
-  border-radius: 2px;
-  background: #0f3460;
-  outline: none;
-  cursor: pointer;
-}
-
-#volumeSlider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 12px;
-  height: 12px;
+.vol-btn {
+  background: none;
+  border: 1px solid #0f3460;
+  color: #ccc;
+  font-size: 16px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: #e94560;
   cursor: pointer;
+  line-height: 1;
+  transition: color 0.2s, background 0.2s;
 }
+
+.vol-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
 
 /* ── トラックリスト ── */
 #listArea {

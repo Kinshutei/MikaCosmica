@@ -137,6 +137,7 @@ function startPlay(videoId, startSec, endSec) {
   }
 
   ytPlayer.loadVideoById({ videoId, startSeconds: startSec })
+  ytPlayer.setVolume(loadVolume(videoId))
 }
 
 function playFrom(list, idx) {
@@ -163,6 +164,9 @@ function updatePlayerUI(track) {
   img.src = thumbUrl(track.videoId)
   img.onload  = () => { img.classList.add('visible'); ph.style.display = 'none' }
   img.onerror = () => { img.classList.remove('visible'); ph.style.display = '' }
+
+  const vol = loadVolume(track.videoId)
+  document.getElementById('volumeLabel').textContent = `${vol}%`
 
   document.getElementById('seekProgress').style.width = '0%'
   document.getElementById('seekHandle').style.left    = '0%'
@@ -365,6 +369,15 @@ function showMsg(msg) {
   document.getElementById('listLive').innerHTML = `<div class="list-msg">${msg}</div>`
 }
 
+// ── 音量記憶 ──────────────────────────────────────────────────────────────────
+function loadVolume(videoId) {
+  return parseInt(localStorage.getItem(`vol_${videoId}`) ?? '50')
+}
+
+function saveVolume(videoId, vol) {
+  localStorage.setItem(`vol_${videoId}`, vol)
+}
+
 // ── イベントリスナー ──────────────────────────────────────────────────────────
 document.getElementById('seekBar').addEventListener('click', e => {
   if (queueIdx < 0) return
@@ -389,11 +402,18 @@ document.getElementById('nextBtn').addEventListener('click', playNext)
 document.getElementById('prevBtn').addEventListener('click', playPrev)
 document.getElementById('refreshBtn').addEventListener('click', loadData)
 
-document.getElementById('volumeSlider').addEventListener('input', e => {
-  const pct = parseInt(e.target.value)
-  document.getElementById('volumeLabel').textContent = `${pct}%`
-  if (ytPlayer && ytReady) ytPlayer.setVolume(pct)
-})
+function adjustVolume(delta) {
+  if (queueIdx < 0 || !queue[queueIdx]) return
+  const videoId = queue[queueIdx].videoId
+  const current = loadVolume(videoId)
+  const next    = Math.min(100, Math.max(0, current + delta))
+  saveVolume(videoId, next)
+  document.getElementById('volumeLabel').textContent = `${next}%`
+  if (ytPlayer && ytReady) ytPlayer.setVolume(next)
+}
+
+document.getElementById('volDownBtn').addEventListener('click', () => adjustVolume(-5))
+document.getElementById('volUpBtn').addEventListener('click',   () => adjustVolume(5))
 
 // ── Service Worker 登録 ───────────────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
