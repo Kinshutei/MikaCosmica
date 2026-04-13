@@ -1,4 +1,4 @@
-const CACHE = 'mikacosmica-1.00'
+const CACHE = 'mikacosmica-1.01'
 const ASSETS = [
   '.',
   'index.html',

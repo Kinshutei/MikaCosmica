@@ -403,6 +403,16 @@ document.getElementById('nextBtn').addEventListener('click', playNext)
 document.getElementById('prevBtn').addEventListener('click', playPrev)
 document.getElementById('refreshBtn').addEventListener('click', loadData)
 
+document.getElementById('guideBtn').addEventListener('click', () => {
+  document.getElementById('guideOverlay').classList.add('open')
+})
+document.getElementById('guideClose').addEventListener('click', () => {
+  document.getElementById('guideOverlay').classList.remove('open')
+})
+document.getElementById('guideOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove('open')
+})
+
 let toastTimer = null
 function showVolumeToast(vol) {
   const el = document.getElementById('volumeToast')

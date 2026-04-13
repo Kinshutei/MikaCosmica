@@ -55,6 +55,88 @@ body {
 }
 #refreshBtn:hover { color: #e94560; }
 
+#guideBtn {
+  background: none;
+  border: 1px solid #0f3460;
+  color: #aaa;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+#guideBtn:hover { color: #fff; border-color: #e94560; }
+
+/* ── ガイドモーダル ── */
+#guideOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+#guideOverlay.open { display: flex; }
+
+#guideModal {
+  background: #16213e;
+  border-radius: 12px;
+  padding: 24px;
+  width: 300px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  color: #eee;
+}
+
+#guideModal h2 {
+  font-size: 15px;
+  color: #e94560;
+  margin-bottom: 16px;
+}
+
+#guideModal h3 {
+  font-size: 12px;
+  color: #aaa;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 12px 0 6px;
+}
+
+#guideModal ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#guideModal li {
+  font-size: 13px;
+  color: #eee;
+  padding-left: 12px;
+  position: relative;
+}
+#guideModal li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: #e94560;
+}
+
+#guideClose {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 14px;
+  cursor: pointer;
+}
+#guideClose:hover { color: #fff; }
+
 /* ── プレーヤー ── */
 #player {
   background: linear-gradient(160deg, #16213e 0%, #0f3460 100%);
