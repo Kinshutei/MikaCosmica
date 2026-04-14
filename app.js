@@ -9,6 +9,7 @@ let ytReady        = false
 let queue          = []
 let queueIdx       = -1
 let isPlaying      = false
+let randomMode     = false
 let allLive        = []
 let searchQ        = ''
 let trackStart     = 0
@@ -141,17 +142,22 @@ function startPlay(videoId, startSec, endSec) {
   ytPlayer.setVolume(loadVolume(videoId))
 }
 
+function buildGroupedQueue(startIdx) {
+  return [...allLive.slice(startIdx), ...allLive.slice(0, startIdx)]
+}
+
 function playFrom(list, idx) {
-  queue    = list
-  queueIdx = idx
-  const track = queue[queueIdx]
+  const track = list[idx]
   if (!track) return
+  const allLiveIdx = allLive.indexOf(track)
+  queue    = allLiveIdx >= 0 ? buildGroupedQueue(allLiveIdx) : list.slice(idx)
+  queueIdx = 0
 
   isPlaying = true
   updatePlayBtn()
-  updatePlayerUI(track)
+  updatePlayerUI(queue[0])
   renderList()
-  startPlay(track.videoId, track.startSec, track.endSec)
+  startPlay(queue[0].videoId, queue[0].startSec, queue[0].endSec)
 }
 
 function updatePlayerUI(track) {
@@ -160,6 +166,14 @@ function updatePlayerUI(track) {
   if (track.release) line1 += ` - ${track.release}`
   document.getElementById('trackTitle').textContent = line1
   document.getElementById('trackFrame').textContent = track.frameName
+
+  // ドット描画（枠内の全トラック）
+  const groupTracks = allLive.filter(t => t.videoId === track.videoId)
+  const dotPos = groupTracks.findIndex(t => t.startSec === track.startSec)
+  document.getElementById('trackDots').innerHTML =
+    groupTracks.map((_, i) =>
+      `<span class="track-dot${i === dotPos ? ' active' : ''}"></span>`
+    ).join('')
 
   const img = document.getElementById('thumbImg')
   const ph  = document.getElementById('thumbPlaceholder')
@@ -181,7 +195,13 @@ function updatePlayerUI(track) {
 
 function playNext() {
   if (!queue.length) return
-  playFrom(queue, (queueIdx + 1) % queue.length)
+  const nextIdx = queueIdx + 1
+  if (randomMode && nextIdx < queue.length && queue[nextIdx].videoId !== queue[queueIdx].videoId) {
+    const idx = Math.floor(Math.random() * allLive.length)
+    playFrom(allLive, idx)
+  } else {
+    playFrom(queue, nextIdx % queue.length)
+  }
 }
 
 function playPrev() {
@@ -351,8 +371,9 @@ function renderTrackList(tracks) {
     el.innerHTML = '<div class="list-msg">トラックがありません</div>'
     return
   }
+  const currentTrack = queue[queueIdx]
   el.innerHTML = tracks.map((t, i) => {
-    const active = queueIdx === i
+    const active = currentTrack && t.videoId === currentTrack.videoId && t.startSec === currentTrack.startSec
     return `
       <div class="track-item ${active ? 'active' : ''}" data-idx="${i}">
         <img class="track-thumb" src="${thumbUrl(t.videoId)}" alt=""
@@ -439,6 +460,15 @@ function adjustVolume(delta) {
 
 document.getElementById('volDownBtn').addEventListener('click', () => adjustVolume(-5))
 document.getElementById('volUpBtn').addEventListener('click',   () => adjustVolume(5))
+
+document.getElementById('randomBtn').addEventListener('click', () => {
+  randomMode = !randomMode
+  document.getElementById('randomBtn').classList.toggle('active', randomMode)
+  if (randomMode && allLive.length) {
+    const idx = Math.floor(Math.random() * allLive.length)
+    playFrom(allLive, idx)
+  }
+})
 
 // ── Service Worker 登録 ───────────────────────────────────────────────────────
 if ('serviceWorker' in navigator) {

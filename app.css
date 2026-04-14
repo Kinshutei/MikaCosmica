@@ -198,6 +198,28 @@ body {
   max-width: 300px;
 }
 
+#trackDots {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  justify-content: center;
+}
+
+.track-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #e94560;
+  opacity: 0.5;
+  transition: background 0.3s, opacity 0.3s, box-shadow 0.3s;
+}
+
+.track-dot.active {
+  background: #4caf50;
+  opacity: 1;
+  box-shadow: 0 0 8px #4caf50, 0 0 16px rgba(76,175,80,0.5);
+}
+
 /* シークバー */
 #seekArea {
   width: 100%;
@@ -257,6 +279,8 @@ body {
 }
 
 .ctrl-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+.ctrl-btn.active { background: rgba(255,255,255,0.15); }
+.ctrl-btn.active img { filter: brightness(0) invert(1); }
 
 .ctrl-btn.play {
   font-size: 24px;
@@ -267,6 +291,7 @@ body {
 }
 
 .ctrl-btn.play:hover { background: #c73652; }
+
 
 .vol-btn {
   background: none;
