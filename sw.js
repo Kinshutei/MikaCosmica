@@ -1,4 +1,4 @@
-const CACHE = 'mikacosmica-1.11'
+const CACHE = 'mikacosmica-1.12'
 const ASSETS = [
   '.',
   'index.html',
@@ -25,7 +25,7 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   // CSVはネットワーク優先（常に最新を取得）
-  if (e.request.url.includes('raw.githubusercontent.com')) {
+  if (e.request.url.endsWith('.csv') || e.request.url.includes('raw.githubusercontent.com')) {
     e.respondWith(
       fetch(e.request).catch(() => caches.match(e.request))
     )
