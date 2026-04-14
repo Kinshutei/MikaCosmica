@@ -1,4 +1,4 @@
-const CACHE = 'mikacosmica-1.13'
+const CACHE = 'mikacosmica-1.14'
 const ASSETS = [
   'index.html',
   'app.css',
@@ -24,8 +24,19 @@ self.addEventListener('activate', e => {
 })
 
 self.addEventListener('fetch', e => {
-  // CSVはキャッシュしない（常にネットワークから取得）
-  if (e.request.url.endsWith('.csv')) return
+  // CSVはネットワーク優先（オフライン時はキャッシュにフォールバック）
+  if (e.request.url.endsWith('.csv')) {
+    e.respondWith(
+      fetch(e.request)
+        .then(res => {
+          const clone = res.clone()
+          caches.open(CACHE).then(c => c.put(e.request, clone))
+          return res
+        })
+        .catch(() => caches.match(e.request))
+    )
+    return
+  }
 
   // アプリシェルはキャッシュ優先
   e.respondWith(
