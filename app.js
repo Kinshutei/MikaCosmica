@@ -142,22 +142,64 @@ function startPlay(videoId, startSec, endSec) {
   ytPlayer.setVolume(loadVolume(videoId))
 }
 
-function buildGroupedQueue(startIdx) {
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr
+}
+
+// 通常再生用キュー：startIdxからCSV順
+function buildNormalQueue(startIdx) {
   return [...allLive.slice(startIdx), ...allLive.slice(0, startIdx)]
 }
 
+// ランダム再生用キュー：開始曲のアルバムから始め、アルバム単位でランダム順
+function buildRandomQueue(startTrack) {
+  const albumMap = {}
+  for (const t of allLive) {
+    if (!albumMap[t.videoId]) albumMap[t.videoId] = []
+    albumMap[t.videoId].push(t)
+  }
+  const startVideoId = startTrack.videoId
+  // 開始アルバム：選択曲を先頭に、残りをシャッフル
+  const startAlbum = albumMap[startVideoId]
+  const rest = shuffleArray(startAlbum.filter(t => t !== startTrack))
+  const startAlbumQueue = [startTrack, ...rest]
+  // 他のアルバムをランダム順に並べ、各アルバム内もシャッフル
+  const otherVideoIds = shuffleArray(Object.keys(albumMap).filter(v => v !== startVideoId))
+  const otherQueues = otherVideoIds.flatMap(vid => shuffleArray([...albumMap[vid]]))
+  return [...startAlbumQueue, ...otherQueues]
+}
+
+// トラックを切り替えて再生（キューは変更しない）
+function setTrack(idx) {
+  queueIdx = idx
+  const track = queue[queueIdx]
+  if (!track) return
+  isPlaying = true
+  updatePlayBtn()
+  updatePlayerUI(track)
+  renderList()
+  startPlay(track.videoId, track.startSec, track.endSec)
+}
+
+// 新しいキューを組んで再生開始
 function playFrom(list, idx) {
   const track = list[idx]
   if (!track) return
   const allLiveIdx = allLive.indexOf(track)
-  queue    = allLiveIdx >= 0 ? buildGroupedQueue(allLiveIdx) : list.slice(idx)
-  queueIdx = 0
+  queue = allLiveIdx >= 0 ? buildNormalQueue(allLiveIdx) : list.slice(idx)
+  setTrack(0)
+}
 
-  isPlaying = true
-  updatePlayBtn()
-  updatePlayerUI(queue[0])
-  renderList()
-  startPlay(queue[0].videoId, queue[0].startSec, queue[0].endSec)
+// ランダム再生開始
+function startRandomPlay() {
+  if (!allLive.length) return
+  const startTrack = allLive[Math.floor(Math.random() * allLive.length)]
+  queue = buildRandomQueue(startTrack)
+  setTrack(0)
 }
 
 function updatePlayerUI(track) {
@@ -195,13 +237,7 @@ function updatePlayerUI(track) {
 
 function playNext() {
   if (!queue.length) return
-  const nextIdx = queueIdx + 1
-  if (randomMode && nextIdx < queue.length && queue[nextIdx].videoId !== queue[queueIdx].videoId) {
-    const idx = Math.floor(Math.random() * allLive.length)
-    playFrom(allLive, idx)
-  } else {
-    playFrom(queue, nextIdx % queue.length)
-  }
+  setTrack((queueIdx + 1) % queue.length)
 }
 
 function playPrev() {
@@ -213,12 +249,12 @@ function playPrev() {
     currentElapsed = 0
     return
   }
-  playFrom(queue, (queueIdx - 1 + queue.length) % queue.length)
+  setTrack((queueIdx - 1 + queue.length) % queue.length)
 }
 
 function togglePlay() {
   if (queueIdx < 0) {
-    if (queue.length) playFrom(queue, 0)
+    if (queue.length) setTrack(0)
     return
   }
   if (isPlaying) {
@@ -464,10 +500,7 @@ document.getElementById('volUpBtn').addEventListener('click',   () => adjustVolu
 document.getElementById('randomBtn').addEventListener('click', () => {
   randomMode = !randomMode
   document.getElementById('randomBtn').classList.toggle('active', randomMode)
-  if (randomMode && allLive.length) {
-    const idx = Math.floor(Math.random() * allLive.length)
-    playFrom(allLive, idx)
-  }
+  if (randomMode) startRandomPlay()
 })
 
 // ── Service Worker 登録 ───────────────────────────────────────────────────────
