@@ -1,6 +1,6 @@
 // ── データソース ──────────────────────────────────────────────────────────────
-const STREAMING_URL   = 'streaminginfo_Mikage.csv'
-const MASTER_URL      = 'rkmusic_song_master.csv'
+const STREAMING_URL   = 'streaminginfo_Mikage.json'
+const MASTER_URL      = 'rkmusic_song_master.json'
 const DEFAULT_VOLUME  = 50
 
 // ── 状態 ─────────────────────────────────────────────────────────────────────
@@ -277,16 +277,13 @@ function updatePlayBtn() {
 async function loadData() {
   showMsg('読み込み中...')
   try {
-    const [streamingCsv, masterCsv] = await Promise.all([
-      fetch(STREAMING_URL).then(r => r.text()),
-      fetch(MASTER_URL).then(r => r.text()),
+    const [streaming, master] = await Promise.all([
+      fetch(STREAMING_URL).then(r => r.json()),
+      fetch(MASTER_URL).then(r => r.json()),
     ])
 
-    const master = parseCsv(masterCsv)
     const masterMap = {}
     for (const row of master) masterMap[row['song_id']] = row
-
-    const streaming = parseCsv(streamingCsv)
     allLive = streaming
       .filter(row => row['曲終了時間']?.trim())
       .map(row => {
