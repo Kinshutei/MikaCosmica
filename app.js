@@ -215,9 +215,14 @@ function updatePlayerUI(track) {
   // ドット描画（枠内の全トラック）
   const groupTracks = allLive.filter(t => t.videoId === track.videoId)
   const dotPos = groupTracks.findIndex(t => t.startSec === track.startSec)
+  const total = groupTracks.length
+  const dotCount = Math.min(total, 10)
+  const activeDot = total <= 10
+    ? dotPos
+    : Math.floor(dotPos / (total / 10))
   document.getElementById('trackDots').innerHTML =
-    groupTracks.map((_, i) =>
-      `<span class="track-dot${i === dotPos ? ' active' : ''}"></span>`
+    Array.from({ length: dotCount }, (_, i) =>
+      `<span class="track-dot${i === activeDot ? ' active' : ''}"></span>`
     ).join('')
 
   const img = document.getElementById('thumbImg')
