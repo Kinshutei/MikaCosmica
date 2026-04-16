@@ -1,6 +1,7 @@
 // ── データソース ──────────────────────────────────────────────────────────────
-const STREAMING_URL   = 'streaminginfo_Mikage.json'
-const MASTER_URL      = 'rkmusic_song_master.json'
+const STREAMING_URL        = 'streaminginfo_Mikage.json'
+const MASTER_URL           = 'rkmusic_song_master.json'
+const MASTER_FALLBACK_URL  = 'https://raw.githubusercontent.com/Kinshutei/MikaCosmica/main/rkmusic_song_master.json'
 const DEFAULT_VOLUME  = 50
 
 // ── 状態 ─────────────────────────────────────────────────────────────────────
@@ -11,6 +12,7 @@ let queueIdx       = -1
 let isPlaying      = false
 let randomMode     = false
 let allLive        = []
+let openGroups     = new Set()
 let searchQ        = ''
 let trackStart     = 0
 let trackEnd       = null
@@ -181,6 +183,7 @@ function setTrack(idx) {
   isPlaying = true
   updatePlayBtn()
   updatePlayerUI(track)
+  openGroups.add(track.videoId)
   renderList()
   startPlay(track.videoId, track.startSec, track.endSec)
 }
@@ -279,7 +282,7 @@ async function loadData() {
   try {
     const [streaming, master] = await Promise.all([
       fetch(STREAMING_URL).then(r => r.json()),
-      fetch(MASTER_URL).then(r => r.json()),
+      fetch(MASTER_URL).then(r => r.ok ? r.json() : fetch(MASTER_FALLBACK_URL).then(f => f.json())),
     ])
 
     const masterMap = {}
@@ -405,18 +408,50 @@ function renderTrackList(tracks) {
     return
   }
   const currentTrack = queue[queueIdx]
-  el.innerHTML = tracks.map((t, i) => {
-    const active = currentTrack && t.videoId === currentTrack.videoId && t.startSec === currentTrack.startSec
-    return `
-      <div class="track-item ${active ? 'active' : ''}" data-idx="${i}">
-        <img class="track-thumb" src="${thumbUrl(t.videoId)}" alt=""
-             onerror="this.style.display='none'">
-        <div class="track-meta">
-          <div class="track-name">${esc(t.title)}${t.artist ? ' / ' + esc(t.artist) : ''}${t.release ? ' - ' + esc(t.release) : ''}</div>
-          <div class="track-sub">${esc(t.frameName)}</div>
-        </div>
-      </div>`
-  }).join('')
+
+  // videoId 単位でグループ化（出現順を保持）
+  const groupMap = new Map()
+  for (const t of tracks) {
+    if (!groupMap.has(t.videoId)) groupMap.set(t.videoId, [])
+    groupMap.get(t.videoId).push(t)
+  }
+
+  let html = ''
+  for (const [videoId, groupTracks] of groupMap) {
+    const isOpen    = openGroups.has(videoId)
+    const frameName = groupTracks[0].frameName
+    const trackItems = groupTracks.map(t => {
+      const active = currentTrack && t.videoId === currentTrack.videoId && t.startSec === currentTrack.startSec
+      const alidx  = allLive.indexOf(t)
+      return `<div class="track-item ${active ? 'active' : ''}" data-idx="${alidx}">
+          <div class="track-meta">
+            <div class="track-name">${esc(t.title)}${t.artist ? ' / ' + esc(t.artist) : ''}${t.release ? ' - ' + esc(t.release) : ''}</div>
+          </div>
+        </div>`
+    }).join('')
+    html += `<div class="album-group">
+      <div class="album-hdr" data-videoid="${esc(videoId)}">
+        <img class="album-thumb" src="${thumbUrl(videoId)}" alt="" onerror="this.style.display='none'">
+        <span class="album-name">${esc(frameName)}</span>
+        <span class="album-count">${groupTracks.length}曲</span>
+        <button class="album-toggle">${isOpen ? 'ー' : '＋'}</button>
+      </div>
+      <div class="album-body${isOpen ? ' open' : ''}">${trackItems}</div>
+    </div>`
+  }
+  el.innerHTML = html
+
+  el.querySelectorAll('.album-toggle').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation()
+      const hdr     = btn.closest('.album-hdr')
+      const videoId = hdr.dataset.videoid
+      const body    = hdr.nextElementSibling
+      const isOpen  = body.classList.toggle('open')
+      if (isOpen) { openGroups.add(videoId);    btn.textContent = 'ー' }
+      else        { openGroups.delete(videoId); btn.textContent = '＋' }
+    })
+  })
 
   el.querySelectorAll('.track-item').forEach(item => {
     item.addEventListener('click', () => {
