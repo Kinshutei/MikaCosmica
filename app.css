@@ -506,3 +506,34 @@ body {
   background-position: center;
   background-size: 20px 20px;
 }
+
+/* ── Singer端ボタン ── */
+#controls {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+#playbackBtns {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.singer-edge-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.singer-edge-btn img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
