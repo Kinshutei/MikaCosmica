@@ -290,14 +290,6 @@ body {
 #controls {
   display: flex;
   align-items: center;
-  width: 100%;
-}
-
-#playbackBtns {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 24px;
 }
 
@@ -514,54 +506,3 @@ body {
   background-position: center;
   background-size: 20px 20px;
 }
-
-/* ── Singer選択 ── */
-#singerWrap {
-  position: relative;
-  flex-shrink: 0;
-}
-
-#singerBtn {
-  background: none;
-  border: 1px solid #0f3460;
-  color: #aaa;
-  font-size: 10px;
-  line-height: 1.4;
-  padding: 5px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  text-align: center;
-  transition: color 0.2s, border-color 0.2s;
-  white-space: nowrap;
-}
-#singerBtn:hover,
-#singerBtn.open { color: #fff; border-color: #e94560; }
-
-#singerDropdown {
-  display: none;
-  position: absolute;
-  bottom: calc(100% + 4px);
-  right: 0;
-  background: #16213e;
-  border: 1px solid #0f3460;
-  border-radius: 8px;
-  overflow: hidden;
-  min-width: 100px;
-  z-index: 50;
-}
-#singerDropdown.open { display: block; }
-
-.singer-item {
-  display: block;
-  width: 100%;
-  background: none;
-  border: none;
-  color: #aaa;
-  font-size: 13px;
-  padding: 10px 16px;
-  cursor: pointer;
-  text-align: left;
-  transition: background 0.15s, color 0.15s;
-}
-.singer-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
-.singer-item.active { color: #e94560; }
