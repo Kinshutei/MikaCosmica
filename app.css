@@ -532,8 +532,13 @@ body {
   align-items: center;
 }
 
-.singer-edge-btn img {
+.singer-img {
+  display: block;
   width: 36px;
   height: 36px;
-  object-fit: contain;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
+#otherSingerImg { background-image: url("other_singer.png"); }
+#selectSingerImg { background-image: url("selectsinger.png"); }
