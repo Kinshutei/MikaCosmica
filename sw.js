@@ -4,6 +4,7 @@ const ASSETS = [
   'app.css',
   'app.js',
   'manifest.json',
+  'repeat_icon.png',
 ]
 
 self.addEventListener('install', e => {

@@ -11,6 +11,7 @@ let queue          = []
 let queueIdx       = -1
 let isPlaying      = false
 let randomMode     = false
+let repeatMode     = false
 let allLive        = []
 let openGroups     = new Set()
 let searchQ        = ''
@@ -113,7 +114,8 @@ function renderSeek() {
     isPlaying = false
     updatePlayBtn()
     currentElapsed = elapsed
-    playNext()
+    if (repeatMode) setTrack(queueIdx)
+    else playNext()
     return
   }
 
@@ -458,6 +460,29 @@ function renderTrackList(tracks) {
     })
   })
 
+  el.querySelectorAll('.album-name').forEach(nameEl => {
+    const hdr = nameEl.closest('.album-hdr')
+    nameEl.addEventListener('click', e => {
+      e.stopPropagation()
+      const videoId   = hdr.dataset.videoid
+      const firstIdx  = allLive.findIndex(t => t.videoId === videoId)
+      if (firstIdx >= 0) playFrom(allLive, firstIdx)
+    })
+    nameEl.addEventListener('mouseenter', () => {
+      const overflow = nameEl.scrollWidth - nameEl.clientWidth
+      if (overflow > 0) {
+        nameEl.style.setProperty('--scroll-x', `-${overflow}px`)
+        nameEl.style.setProperty('--scroll-duration', `${Math.max(2, overflow / 40)}s`)
+        nameEl.classList.add('scrolling')
+      }
+    })
+    nameEl.addEventListener('mouseleave', () => {
+      nameEl.classList.remove('scrolling')
+      nameEl.style.removeProperty('--scroll-x')
+      nameEl.style.removeProperty('--scroll-duration')
+    })
+  })
+
   el.querySelectorAll('.track-item').forEach(item => {
     item.addEventListener('click', () => {
       playFrom(allLive, parseInt(item.dataset.idx))
@@ -494,6 +519,14 @@ document.getElementById('seekBar').addEventListener('click', e => {
 
 document.getElementById('searchInput').addEventListener('input', e => {
   searchQ = e.target.value
+  document.getElementById('clearBtn').style.display = searchQ ? 'block' : 'none'
+  renderList()
+})
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  document.getElementById('searchInput').value = ''
+  searchQ = ''
+  document.getElementById('clearBtn').style.display = 'none'
   renderList()
 })
 
@@ -581,6 +614,11 @@ document.getElementById('randomBtn').addEventListener('click', () => {
   randomMode = !randomMode
   document.getElementById('randomBtn').classList.toggle('active', randomMode)
   if (randomMode) startRandomPlay()
+})
+
+document.getElementById('repeatBtn').addEventListener('click', () => {
+  repeatMode = !repeatMode
+  document.getElementById('repeatBtn').classList.toggle('active', repeatMode)
 })
 
 // ── Service Worker 登録 ───────────────────────────────────────────────────────
