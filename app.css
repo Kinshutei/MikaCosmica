@@ -33,12 +33,12 @@ body {
 
 #searchWrap {
   flex: 1;
-  display: flex;
-  align-items: center;
+  position: relative;
 }
 
 #searchInput {
-  flex: 1;
+  display: block;
+  width: 100%;
   padding: 8px 12px;
   border-radius: 20px;
   border: none;
@@ -46,20 +46,24 @@ body {
   color: #eee;
   font-size: 13px;
   outline: none;
+  box-sizing: border-box;
 }
 
 #searchInput::placeholder { color: #888; }
 
 #clearBtn {
   display: none;
-  margin-left: -67px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 1;
   background: none;
   border: none;
   color: #888;
   font-size: 25px;
   cursor: pointer;
-  padding: 0 4px;
+  padding: 0;
   line-height: 1;
   transition: color 0.2s;
 }
