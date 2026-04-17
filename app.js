@@ -500,7 +500,50 @@ document.getElementById('searchInput').addEventListener('input', e => {
 document.getElementById('playBtn').addEventListener('click', togglePlay)
 document.getElementById('nextBtn').addEventListener('click', playNext)
 document.getElementById('prevBtn').addEventListener('click', playPrev)
-document.getElementById('refreshBtn').addEventListener('click', loadData)
+// ── アップデートボタン（1分クールダウン） ────────────────────────────────────
+const UPDATE_COOLDOWN_MS = 60_000
+const UPDATE_LS_KEY      = 'update_last'
+
+let cooldownTimer = null
+
+function startCooldown(btn, remainMs) {
+  if (cooldownTimer) clearInterval(cooldownTimer)
+  let left = Math.ceil(remainMs / 1000)
+  btn.disabled    = true
+  btn.textContent = `↺ ${left}s`
+  cooldownTimer = setInterval(() => {
+    left--
+    if (left <= 0) {
+      clearInterval(cooldownTimer)
+      cooldownTimer   = null
+      btn.disabled    = false
+      btn.textContent = '↺'
+    } else {
+      btn.textContent = `↺ ${left}s`
+    }
+  }, 1000)
+}
+
+;(function initUpdateBtn() {
+  const btn  = document.getElementById('updateBtn')
+  const last = parseInt(localStorage.getItem(UPDATE_LS_KEY) || '0')
+  const diff = Date.now() - last
+  if (diff < UPDATE_COOLDOWN_MS) startCooldown(btn, UPDATE_COOLDOWN_MS - diff)
+
+  btn.addEventListener('click', async () => {
+    localStorage.setItem(UPDATE_LS_KEY, String(Date.now()))
+    startCooldown(btn, UPDATE_COOLDOWN_MS)
+    if ('caches' in window) {
+      const keys = await caches.keys()
+      await Promise.all(keys.map(k => caches.delete(k)))
+    }
+    if ('serviceWorker' in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations()
+      await Promise.all(regs.map(r => r.unregister()))
+    }
+    location.reload()
+  })
+})()
 
 document.getElementById('guideBtn').addEventListener('click', () => {
   document.getElementById('guideOverlay').classList.add('open')
