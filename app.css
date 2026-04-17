@@ -506,3 +506,80 @@ body {
   background-position: center;
   background-size: 20px 20px;
 }
+
+/* ── Singer選択ボタン ── */
+#singerBtn {
+  background: none;
+  border: 1px solid #0f3460;
+  color: #aaa;
+  font-size: 10px;
+  line-height: 1.4;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: color 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+#singerBtn:hover { color: #fff; border-color: #e94560; }
+
+/* ── Singer選択モーダル ── */
+#singerOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+#singerOverlay.open { display: flex; }
+
+#singerModal {
+  background: #16213e;
+  border-radius: 12px;
+  padding: 24px;
+  width: 240px;
+  position: relative;
+  color: #eee;
+}
+
+#singerModal h2 {
+  font-size: 15px;
+  color: #e94560;
+  margin-bottom: 16px;
+}
+
+#singerClose {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+#singerClose:hover { color: #fff; }
+
+#singerList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.singer-item {
+  background: none;
+  border: 1px solid #0f3460;
+  color: #aaa;
+  font-size: 14px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.2s, border-color 0.2s;
+}
+.singer-item:hover { color: #fff; border-color: #e94560; }
+.singer-item.active { color: #fff; border-color: #e94560; }

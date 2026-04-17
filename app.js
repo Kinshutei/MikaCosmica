@@ -581,6 +581,21 @@ function startCooldown(btn, remainMs) {
 document.getElementById('guideBtn').addEventListener('click', () => {
   document.getElementById('guideOverlay').classList.add('open')
 })
+
+document.getElementById('singerBtn').addEventListener('click', () => {
+  document.getElementById('singerOverlay').classList.add('open')
+})
+document.getElementById('singerClose').addEventListener('click', () => {
+  document.getElementById('singerOverlay').classList.remove('open')
+})
+document.getElementById('singerOverlay').addEventListener('click', e => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove('open')
+})
+document.querySelectorAll('.singer-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('singerOverlay').classList.remove('open')
+  })
+})
 document.getElementById('guideClose').addEventListener('click', () => {
   document.getElementById('guideOverlay').classList.remove('open')
 })
