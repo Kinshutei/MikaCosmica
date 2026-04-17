@@ -507,79 +507,54 @@ body {
   background-size: 20px 20px;
 }
 
-/* ── Singer選択ボタン ── */
+/* ── Singer選択 ── */
+#singerWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
 #singerBtn {
   background: none;
   border: 1px solid #0f3460;
   color: #aaa;
   font-size: 10px;
   line-height: 1.4;
-  padding: 4px 8px;
+  padding: 5px 8px;
   border-radius: 6px;
   cursor: pointer;
   text-align: center;
   transition: color 0.2s, border-color 0.2s;
   white-space: nowrap;
 }
-#singerBtn:hover { color: #fff; border-color: #e94560; }
+#singerBtn:hover,
+#singerBtn.open { color: #fff; border-color: #e94560; }
 
-/* ── Singer選択モーダル ── */
-#singerOverlay {
+#singerDropdown {
   display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.6);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-}
-#singerOverlay.open { display: flex; }
-
-#singerModal {
-  background: #16213e;
-  border-radius: 12px;
-  padding: 24px;
-  width: 240px;
-  position: relative;
-  color: #eee;
-}
-
-#singerModal h2 {
-  font-size: 15px;
-  color: #e94560;
-  margin-bottom: 16px;
-}
-
-#singerClose {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  bottom: calc(100% + 8px);
+  right: 0;
+  background: #16213e;
+  border: 1px solid #0f3460;
+  border-radius: 8px;
+  overflow: hidden;
+  min-width: 100px;
+  z-index: 50;
+}
+#singerDropdown.open { display: block; }
+
+.singer-item {
+  display: block;
+  width: 100%;
   background: none;
   border: none;
   color: #aaa;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 0;
-  line-height: 1;
-}
-#singerClose:hover { color: #fff; }
-
-#singerList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.singer-item {
-  background: none;
-  border: 1px solid #0f3460;
-  color: #aaa;
-  font-size: 14px;
+  font-size: 13px;
   padding: 10px 16px;
-  border-radius: 8px;
   cursor: pointer;
   text-align: left;
-  transition: color 0.2s, border-color 0.2s;
+  transition: background 0.15s, color 0.15s;
 }
-.singer-item:hover { color: #fff; border-color: #e94560; }
-.singer-item.active { color: #fff; border-color: #e94560; }
+.singer-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+.singer-item.active { color: #e94560; }

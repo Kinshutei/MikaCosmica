@@ -582,19 +582,20 @@ document.getElementById('guideBtn').addEventListener('click', () => {
   document.getElementById('guideOverlay').classList.add('open')
 })
 
-document.getElementById('singerBtn').addEventListener('click', () => {
-  document.getElementById('singerOverlay').classList.add('open')
-})
-document.getElementById('singerClose').addEventListener('click', () => {
-  document.getElementById('singerOverlay').classList.remove('open')
-})
-document.getElementById('singerOverlay').addEventListener('click', e => {
-  if (e.target === e.currentTarget) e.currentTarget.classList.remove('open')
+document.getElementById('singerBtn').addEventListener('click', e => {
+  e.stopPropagation()
+  document.getElementById('singerBtn').classList.toggle('open')
+  document.getElementById('singerDropdown').classList.toggle('open')
 })
 document.querySelectorAll('.singer-item').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.getElementById('singerOverlay').classList.remove('open')
+    document.getElementById('singerBtn').classList.remove('open')
+    document.getElementById('singerDropdown').classList.remove('open')
   })
+})
+document.addEventListener('click', () => {
+  document.getElementById('singerBtn').classList.remove('open')
+  document.getElementById('singerDropdown').classList.remove('open')
 })
 document.getElementById('guideClose').addEventListener('click', () => {
   document.getElementById('guideOverlay').classList.remove('open')
