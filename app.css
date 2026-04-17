@@ -172,7 +172,6 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  position: relative;
 }
 
 /* サムネイル */
@@ -510,9 +509,7 @@ body {
 
 /* ── Singer選択 ── */
 #singerWrap {
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
+  position: relative;
 }
 
 #singerBtn {
