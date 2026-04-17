@@ -172,6 +172,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  position: relative;
 }
 
 /* サムネイル */
@@ -290,7 +291,10 @@ body {
 #controls {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 24px;
+  position: relative;
+  width: 100%;
 }
 
 .ctrl-btn {
@@ -509,7 +513,9 @@ body {
 
 /* ── Singer選択 ── */
 #singerWrap {
-  position: relative;
+  position: absolute;
+  right: 16px;
+  bottom: 20px;
 }
 
 #singerBtn {
