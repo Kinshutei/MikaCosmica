@@ -34,8 +34,6 @@ body {
 #searchWrap {
   flex: 1;
   position: relative;
-  display: flex;
-  align-items: center;
 }
 
 #searchInput {
