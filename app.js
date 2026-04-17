@@ -613,7 +613,25 @@ document.getElementById('volUpBtn').addEventListener('click',   () => adjustVolu
 document.getElementById('randomBtn').addEventListener('click', () => {
   randomMode = !randomMode
   document.getElementById('randomBtn').classList.toggle('active', randomMode)
-  if (randomMode) startRandomPlay()
+
+  if (randomMode) {
+    if (queueIdx < 0) {
+      startRandomPlay()
+    } else {
+      // 再生中: 現在の曲をキュー先頭に置き、アルバム内→他アルバムのランダムキューを組む
+      const ct = queue[queueIdx]
+      queue = buildRandomQueue(ct)
+      queueIdx = 0
+    }
+  } else {
+    if (queueIdx >= 0) {
+      // 再生中: 現在の曲から通常順（アルバム残り→全体順）に切り替え
+      const ct = queue[queueIdx]
+      const idx = allLive.findIndex(t => t.videoId === ct.videoId && t.startSec === ct.startSec)
+      queue = idx >= 0 ? buildNormalQueue(idx) : allLive.slice()
+      queueIdx = 0
+    }
+  }
 })
 
 document.getElementById('repeatBtn').addEventListener('click', () => {
