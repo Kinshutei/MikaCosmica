@@ -52,12 +52,12 @@ body {
 
 #clearBtn {
   display: none;
-  margin-left: -37px;
+  margin-left: -67px;
   z-index: 1;
   background: none;
   border: none;
   color: #888;
-  font-size: 13px;
+  font-size: 25px;
   cursor: pointer;
   padding: 0 4px;
   line-height: 1;
